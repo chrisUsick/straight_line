@@ -4,4 +4,3 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rubocop', require: false
-gem 'simple_git_workflow', path: '.'

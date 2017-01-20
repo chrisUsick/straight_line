@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Rake commands to perform simple git workflow'
   spec.description   = %(
-TODO: Write a longer description or delete this line.)
+This module provides an opinionated git workflow)
   spec.homepage      = ''
   spec.license       = 'MIT'
 
@@ -24,4 +24,5 @@ TODO: Write a longer description or delete this line.)
   spec.add_development_dependency 'bundler', '~> 1.13'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_dependency 'thor'
 end
