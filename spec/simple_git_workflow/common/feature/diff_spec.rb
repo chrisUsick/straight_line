@@ -2,7 +2,11 @@ require 'spec_helper'
 require 'common/feature/diff'
 
 describe Feature::Diff do
-  it 'does not create PR if there are uncommitted changes'
+  it 'does not create PR if there are uncommitted changes' do
+    allow_any_instance_of(subject).to receive(:changes_committed?).and_return false
+    diff = Feature::Diff.new
+    expect(diff.diff).to raise_error(/Commit.*changes/)
+  end
 
   it 'rebases feature branch to master branch'
 
