@@ -1,6 +1,8 @@
 require 'common/command'
 require 'common/git_commands/pull'
 require 'common/git_commands/rebase'
+require 'common/git_commands/merge'
+require 'common/git_commands/push'
 require 'common/user_error'
 module Feature
   class Diff
@@ -28,8 +30,8 @@ module Feature
       else
         pull_cmd.run
         GitCommands::Rebase.new('master', feature_name).run
-        create_pull_request
         GitCommands::Push.new(feature_name, false).run
+        create_pull_request
       end
 
     end
