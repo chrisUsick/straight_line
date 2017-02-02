@@ -25,4 +25,6 @@ This module provides an opinionated git workflow)
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_dependency 'thor'
+  spec.add_dependency 'octokit'
+  spec.add_dependency 'netrc'
 end

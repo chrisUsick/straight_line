@@ -5,16 +5,6 @@ describe Feature::Diff do
   before do
     allow_any_instance_of(Kernel).to receive(:system)
   end
-  it 'does not create PR if there are uncommitted changes' do
-    allow_any_instance_of(Feature::Diff).to receive(:changes_committed?).and_return false
-    diff = Feature::Diff.new
-    expect {diff.diff}.to raise_error(/Commit.*changes/)
-  end
-
-  it 'does not create a PR if not in a feature branch' do
-    allow_any_instance_of(Feature::Diff).to receive(:determine_current_feature?).and_return 'master'
-    expect {Feature::Diff.new}.to raise_error(UserError)
-  end
 
   context 'pull request does not exist' do
     let(:pull_master) {spy GitCommands::Pull.new('master')}
@@ -54,7 +44,9 @@ describe Feature::Diff do
     end
   end
 
-  it 'pushes committed changes to existing PR'
+  it 'pushes committed changes to existing PR' do
+
+  end
 
   it 'merges changes from master into PR branch'
 

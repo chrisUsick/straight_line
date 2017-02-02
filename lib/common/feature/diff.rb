@@ -4,6 +4,7 @@ require 'common/git_commands/rebase'
 require 'common/git_commands/merge'
 require 'common/git_commands/push'
 require 'common/user_error'
+require 'octokit'
 module Feature
   class Diff
     attr_reader :feature_name
