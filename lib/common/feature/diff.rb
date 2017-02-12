@@ -42,7 +42,9 @@ module Feature
     end
 
     def create_pull_request
-
+      Github.create_pull_request current_feature,
+                                 "Pull request for: #{current_feature}",
+                                 ''
     end
 
     def changes_committed?
