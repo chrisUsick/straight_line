@@ -18,8 +18,9 @@ class Command
       @env_vars = {}
       command_with_params = "#{@command} #{@args.join ' '}"
 
-      system(@env_vars, command_with_params)
+      res = system(@env_vars, command_with_params)
       @sub_commands.each {|c| c.run }
+      res
     end
   end
 

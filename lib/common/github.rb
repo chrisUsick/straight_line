@@ -36,13 +36,17 @@ class Github
   def create_pull_request(branch, title, body)
     repo = repo_name
     client.create_pull_request repo,
-        'master', branch, title, body
+        'master', "#{github_login}:#{branch}", title, body
   end
 
   def repo_name
     cmd = GitCommands::Config.new('remote.origin.url')
     remote = cmd.run
     remote.match(/(git@github.com:)(.*)\.git/)[2]
+  end
+
+  def github_login
+    client.user.login
   end
 
 end
