@@ -15,12 +15,13 @@ class Command
 
   def run
     Dir.chdir working_dir do
-      @env_vars = {}
       command_with_params = "#{@command} #{@args.join ' '}"
 
-      res = system(@env_vars, command_with_params)
-      @sub_commands.each {|c| c.run }
-      res
+      res = %x[#{command_with_params}]
+      sub_res = ''
+      sub_res = @sub_commands.map {|c| c.run }.join("\n") unless @sub_commands.empty?
+
+      res + "\n" + sub_res
     end
   end
 

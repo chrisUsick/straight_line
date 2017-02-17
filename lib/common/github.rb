@@ -10,6 +10,17 @@ class Github
     @client = nil
   end
 
+  def self.make_class(name)
+    class << self
+      self
+    end.instance_eval do
+      define_method name do |*args|
+        self.instance.send name, *args
+      end
+    end
+
+  end
+
   def login
   end
 
@@ -38,11 +49,12 @@ class Github
     client.create_pull_request repo,
         'master', "#{github_login}:#{branch}", title, body
   end
+  make_class :create_pull_request
 
   def repo_name
     cmd = GitCommands::Config.new('remote.origin.url')
     remote = cmd.run
-    remote.match(/(git@github.com:)(.*)\.git/)[2]
+    remote.match(/(git@github.com:)(.*)\/.*/)[2]
   end
 
   def github_login

@@ -22,4 +22,10 @@ describe Github do
 
     end
   end
+
+  describe '::make_class' do
+    it 'makes a method class level' do
+      expect(Github.respond_to? :create_pull_request).to be_truthy
+    end
+  end
 end

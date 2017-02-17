@@ -5,6 +5,7 @@ require 'common/git_commands/merge'
 require 'common/git_commands/push'
 require 'common/git_commands/commit'
 require 'common/user_error'
+require 'common/github'
 require 'octokit'
 module Feature
   class Diff
@@ -19,7 +20,7 @@ module Feature
       Command.new('git')
         .arg('branch')
         .run
-        .match(/^\s\*\S+/)[0].strip
+        .match(/^\*\s+(.*)/)[1].strip
     end
 
     def diff(params)
