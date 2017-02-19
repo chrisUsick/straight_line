@@ -1,4 +1,5 @@
 require 'common/command'
+require 'common/feature'
 require 'common/git_commands/pull'
 require 'common/git_commands/rebase'
 require 'common/git_commands/merge'
@@ -9,6 +10,7 @@ require 'common/github'
 require 'octokit'
 module Feature
   class Diff
+    include Feature
     attr_reader :feature_name
 
     def initialize
@@ -17,12 +19,12 @@ module Feature
       raise UserError.new('Commit your changes before creating a diff') unless changes_committed?
     end
 
-    def current_feature
-      Command.new('git')
-        .arg('branch')
-        .run
-        .match(/^\*\s+(.*)/)[1].strip
-    end
+    # def current_feature
+    #   Command.new('git')
+    #     .arg('branch')
+    #     .run
+    #     .match(/^\*\s+(.*)/)[1].strip
+    # end
 
     def diff(params)
       pull_cmd = GitCommands::Pull.new('master')
