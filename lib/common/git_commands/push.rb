@@ -13,6 +13,7 @@ module GitCommands
         .arg('origin')
         .arg(branch) unless remote_exists
 
+      sub_command push_command
     end
   end
 end

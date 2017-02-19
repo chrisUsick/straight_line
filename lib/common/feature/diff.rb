@@ -14,6 +14,7 @@ module Feature
     def initialize
       @feature_name = current_feature
       raise UserError.new('Failed to create diff: you\'re on the master branch') if @feature_name == 'master'
+      raise UserError.new('Commit your changes before creating a diff') unless changes_committed?
     end
 
     def current_feature
@@ -24,7 +25,6 @@ module Feature
     end
 
     def diff(params)
-      raise 'Commit your changes before creating a diff' unless changes_committed?
       pull_cmd = GitCommands::Pull.new('master')
       if pull_request_exists?
         pull_cmd.run
@@ -62,7 +62,12 @@ module Feature
     end
 
     def pull_request_exists?
-      false
+      pulls = Github.pull_requests
+      pulls.any? do |p|
+        p.head.ref == current_feature &&
+            p.head.user.login == Github.github_login &&
+            p.base.ref == 'master'
+      end
     end
 
     def create_pull_request(title, body)

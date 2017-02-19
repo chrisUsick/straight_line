@@ -54,11 +54,17 @@ class Github
   def repo_name
     cmd = GitCommands::Config.new('remote.origin.url')
     remote = cmd.run
-    remote.match(/(git@github.com:)(.*)\/.*/)[2]
+    remote.match(/(git@github.com:)(.*\/.*)/)[2]
   end
 
   def github_login
     client.user.login
   end
+  make_class :github_login
+
+  def pull_requests
+    client.pull_requests repo_name
+  end
+  make_class :pull_requests
 
 end
