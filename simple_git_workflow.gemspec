@@ -1,6 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'common/command'
 
 Gem::Specification.new do |spec|
   spec.name          = 'simple_git_workflow'
@@ -25,4 +26,6 @@ This module provides an opinionated git workflow)
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_dependency 'thor'
+  spec.add_dependency 'octokit'
+  spec.add_dependency 'netrc'
 end

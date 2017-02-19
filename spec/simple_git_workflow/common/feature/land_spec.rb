@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'common/feature/diff'
+require 'common/feature/land'
 
 describe Feature::Land do
   it 'does not land if uncommitted files exist'
