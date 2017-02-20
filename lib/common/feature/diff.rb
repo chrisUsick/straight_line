@@ -5,6 +5,7 @@ require 'common/git_commands/rebase'
 require 'common/git_commands/merge'
 require 'common/git_commands/push'
 require 'common/git_commands/commit'
+require 'common/git_commands/log'
 require 'common/user_error'
 require 'common/github'
 require 'octokit'
@@ -37,15 +38,16 @@ module Feature
 
     def diff_pull_request_exists(params)
       GitCommands::Merge.new(feature_name, 'master').run
-      GitCommands::Commit.new(params[:title], params[:body]).run
+      title, body = extract_params params, [:title, :body]
+      GitCommands::Commit.new(title, body).run
       GitCommands::Push.new(feature_name).run
     end
 
     def diff_no_pull_request(params)
       GitCommands::Rebase.new('master', feature_name).run
       GitCommands::Push.new(feature_name, false).run
-      require_params params, [:title, :body]
-      create_pull_request params[:title], params[:body]
+      title, body = extract_params params, [:title, :body]
+      create_pull_request title, body
     end
 
     def require_params(params, required)
@@ -54,6 +56,21 @@ module Feature
       end.compact
 
       raise required_errors.join "\n" unless required_errors.empty?
+    end
+
+    def extract_params(params, keys)
+      keys.map do |key|
+        case key
+          when :title
+            params[:title] || last_commit_message
+          else
+            params[key]
+        end
+      end
+    end
+
+    def last_commit_message
+      GitCommands::Log.new('-1 --pretty=%B').run.split("\n").first
     end
 
     # @return String error message if there is an error, else nil
@@ -65,11 +82,10 @@ module Feature
     end
 
     def pull_request_exists?
-      pulls = Github.pull_requests
-      pulls.any? do |p|
-        p.head.ref == current_feature &&
-          p.head.user.login == Github.github_login &&
-          p.base.ref == 'master'
+      if Github.pull_request_for_feature(current_feature)
+        true
+      else
+        false
       end
     end
 

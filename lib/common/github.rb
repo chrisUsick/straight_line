@@ -63,4 +63,14 @@ class Github
     client.pull_requests repo_name
   end
   make_class :pull_requests
+
+  def pull_request_for_feature(feature)
+    prs = pull_requests
+    prs.find do |p|
+      p.head.ref == feature &&
+          p.head.user.login == Github.github_login &&
+          p.base.ref == 'master'
+    end
+  end
+  make_class :pull_request_for_feature
 end

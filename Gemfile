@@ -7,3 +7,4 @@ gem 'rubocop', require: false
 gem 'vcr'
 gem 'version_bumper'
 gem 'webmock'
+gem 'simplecov'
