@@ -8,4 +8,3 @@ namespace 'feature' do
     Feature::Diff.new.diff(args)
   end
 end
-

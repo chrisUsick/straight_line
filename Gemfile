@@ -4,6 +4,6 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rubocop', require: false
-gem 'webmock'
 gem 'vcr'
 gem 'version_bumper'
+gem 'webmock'

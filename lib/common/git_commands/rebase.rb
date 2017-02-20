@@ -1,5 +1,7 @@
 require 'common/command'
+
 module GitCommands
+  # Rebase a branch to a base
   class Rebase < Command
     def initialize(base, branch)
       super('git')
@@ -9,4 +11,3 @@ module GitCommands
     end
   end
 end
-

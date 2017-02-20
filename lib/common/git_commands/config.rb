@@ -1,5 +1,7 @@
 require 'common/command'
+
 module GitCommands
+  # Read a config setting
   class Config < Command
     def initialize(setting)
       super 'git'
@@ -7,5 +9,4 @@ module GitCommands
       arg setting
     end
   end
-
 end

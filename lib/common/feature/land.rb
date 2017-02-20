@@ -1,12 +1,20 @@
 require 'common/feature'
+
 module Feature
+  # Merges the feature to master and pushes it
   class Land
     include Feature
     def initialize
-      raise UserError.new('Failed to create diff: you\'re on the master branch') if current_feature == 'master'
-      raise UserError.new('Commit your changes before creating a diff') unless changes_committed?
+      if current_feature == 'master'
+        raise UserError,
+              'Failed to create diff: you\'re on the master branch'
+      end
+      return if changes_committed?
+      raise UserError,
+            'Commit your changes before creating a diff'
     end
-    def land(args)
+
+    def land(_args)
       pull_cmd = GitCommands::Pull.new('master')
       pull_cmd.run
       feature_name = current_feature

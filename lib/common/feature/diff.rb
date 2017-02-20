@@ -8,49 +8,52 @@ require 'common/git_commands/commit'
 require 'common/user_error'
 require 'common/github'
 require 'octokit'
+
 module Feature
+  # Multi purpose feature. It creates a pull request or pushes
+  # latest commits to the existing pull request
   class Diff
     include Feature
     attr_reader :feature_name
 
     def initialize
       @feature_name = current_feature
-      raise UserError.new('Failed to create diff: you\'re on the master branch') if @feature_name == 'master'
-      raise UserError.new('Commit your changes before creating a diff') unless changes_committed?
+      if @feature_name == 'master'
+        raise UserError, 'Failed to create diff: you\'re on the master branch'
+      end
+      return if changes_committed?
+      raise UserError, 'Commit your changes before creating a diff'
     end
-
-    # def current_feature
-    #   Command.new('git')
-    #     .arg('branch')
-    #     .run
-    #     .match(/^\*\s+(.*)/)[1].strip
-    # end
 
     def diff(params)
       pull_cmd = GitCommands::Pull.new('master')
+      pull_cmd.run
       if pull_request_exists?
-        pull_cmd.run
-        GitCommands::Merge.new(feature_name, 'master').run
-        GitCommands::Commit.new(params[:title], params[:body]).run
-        GitCommands::Push.new(feature_name).run
+        diff_pull_request_exists params
       else
-        pull_cmd.run
-        GitCommands::Rebase.new('master', feature_name).run
-        GitCommands::Push.new(feature_name, false).run
-        require_params params, [:title, :body]
-        create_pull_request params[:title], params[:body]
+        diff_no_pull_request params
       end
+    end
 
+    def diff_pull_request_exists(params)
+      GitCommands::Merge.new(feature_name, 'master').run
+      GitCommands::Commit.new(params[:title], params[:body]).run
+      GitCommands::Push.new(feature_name).run
+    end
+
+    def diff_no_pull_request(params)
+      GitCommands::Rebase.new('master', feature_name).run
+      GitCommands::Push.new(feature_name, false).run
+      require_params params, [:title, :body]
+      create_pull_request params[:title], params[:body]
     end
 
     def require_params(params, required)
-
       required_errors = required.map do |o|
         validate_param params, o
       end.compact
 
-      raise required_errors.join "\n" unless required_errors.size == 0
-
+      raise required_errors.join "\n" unless required_errors.empty?
     end
 
     # @return String error message if there is an error, else nil
@@ -58,8 +61,6 @@ module Feature
       case param_spec.class
       when Symbol
         "#{param_spec} is not provided." unless params[param_spec]
-      else
-        nil
       end
     end
 
@@ -67,8 +68,8 @@ module Feature
       pulls = Github.pull_requests
       pulls.any? do |p|
         p.head.ref == current_feature &&
-            p.head.user.login == Github.github_login &&
-            p.base.ref == 'master'
+          p.head.user.login == Github.github_login &&
+          p.base.ref == 'master'
       end
     end
 
@@ -76,14 +77,6 @@ module Feature
       Github.create_pull_request current_feature,
                                  title,
                                  body
-    end
-
-    def changes_committed?
-      cmd = Command.new 'git'
-      cmd.arg 'status'
-
-      out = cmd.run
-      out =~ /nothing to commit/
     end
   end
 end

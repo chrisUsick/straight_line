@@ -1,3 +1,5 @@
+
+# Basic class for wrapping shell execution
 class Command
   attr_accessor :working_dir
   def initialize(command, args = [])
@@ -17,17 +19,18 @@ class Command
     Dir.chdir working_dir do
       command_with_params = "#{@command} #{@args.join ' '}"
 
-      res = %x[#{command_with_params}]
+      res = `#{command_with_params}`
       sub_res = ''
-      sub_res = @sub_commands.map {|c| c.run }.join("\n") unless @sub_commands.empty?
+      sub_res = @sub_commands.map(&:run).join("\n") unless @sub_commands.empty?
 
       res + "\n" + sub_res
     end
   end
 
   def sub_command(command)
-    raise ArgumentError.new 'command must be of type common/command' unless command.kind_of? Command
+    unless command.is_a? Command
+      raise ArgumentError, 'command must be of type common/command'
+    end
     @sub_commands << command
-
   end
 end
