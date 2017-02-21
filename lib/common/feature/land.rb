@@ -21,11 +21,19 @@ module Feature
     end
 
     def land(_args = {})
+      feature_name = current_feature
       pull_cmd = GitCommands::Pull.new('master')
       pull_cmd.run
-      feature_name = current_feature
       GitCommands::Merge.new(feature_name, 'master').run
-      GitCommands::Commit.new("Merge master into #{feature_name}", '').run
+
+      begin
+        GitCommands::Commit.new("Merge master into #{feature_name}", '').run
+      rescue StandardError => e
+        unless e.message.match %r[Your branch is up-to-date with 'origin/#{feature_name}]
+          raise e
+        end
+      end
+
       GitCommands::Push.new(feature_name).run
       if pull_request_closed?(feature_name)
         Util.logger.info %{#{feature_name} was merged in github.

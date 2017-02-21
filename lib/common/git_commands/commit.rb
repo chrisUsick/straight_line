@@ -6,8 +6,8 @@ module GitCommands
     def initialize(title, body = '')
       super 'git'
       arg 'commit -a'
-      arg "-m #{title}" unless title.empty?
-      arg "-m #{body}" unless body.nil? || body.empty?
+      arg %(-m "#{title}") unless title.empty?
+      arg %(-m "#{body}") unless body.nil? || body.empty?
     end
   end
 end
