@@ -1,9 +1,11 @@
 require 'common/command'
+
 module GitCommands
+  # pull a branch from remote
   class Pull < Command
     def initialize(branch)
       super('git')
-      arg 'checkout -b'
+      arg 'checkout'
       arg branch
       pull_command = Command.new 'git'
       pull_command

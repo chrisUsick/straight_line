@@ -1,54 +1,83 @@
 require 'common/command'
+require 'common/feature'
 require 'common/git_commands/pull'
 require 'common/git_commands/rebase'
 require 'common/git_commands/merge'
 require 'common/git_commands/push'
 require 'common/git_commands/commit'
+require 'common/git_commands/log'
 require 'common/user_error'
 require 'common/github'
 require 'octokit'
+
 module Feature
+  # Multi purpose feature. It creates a pull request or pushes
+  # latest commits to the existing pull request
   class Diff
+    include Feature
     attr_reader :feature_name
 
     def initialize
       @feature_name = current_feature
-      raise UserError.new('Failed to create diff: you\'re on the master branch') if @feature_name == 'master'
-      raise UserError.new('Commit your changes before creating a diff') unless changes_committed?
-    end
-
-    def current_feature
-      Command.new('git')
-        .arg('branch')
-        .run
-        .match(/^\*\s+(.*)/)[1].strip
+      if @feature_name == 'master'
+        raise UserError, 'Failed to create diff: you\'re on the master branch'
+      end
+      return if changes_committed?
+      raise UserError, 'Commit your changes before creating a diff'
     end
 
     def diff(params)
       pull_cmd = GitCommands::Pull.new('master')
+      pull_cmd.run
       if pull_request_exists?
-        pull_cmd.run
-        GitCommands::Merge.new(feature_name, 'master').run
-        GitCommands::Commit.new(params[:title], params[:body]).run
-        GitCommands::Push.new(feature_name).run
+        diff_pull_request_exists params
       else
-        pull_cmd.run
-        GitCommands::Rebase.new('master', feature_name).run
-        GitCommands::Push.new(feature_name, false).run
-        require_params params, [:title, :body]
-        create_pull_request params[:title], params[:body]
+        diff_no_pull_request params
       end
+    end
 
+    def diff_pull_request_exists(params)
+      GitCommands::Merge.new(feature_name, 'master').run
+      title, body = extract_params params, [:title, :body]
+      begin
+        GitCommands::Commit.new(title, body).run
+      rescue StandardError => e
+        unless e.message.match %r[nothing to commit]
+          raise e
+        end
+      end
+      GitCommands::Push.new(feature_name).run
+    end
+
+    def diff_no_pull_request(params)
+      GitCommands::Rebase.new('master', feature_name).run
+      GitCommands::Push.new(feature_name, false).run
+      title, body = extract_params params, [:title, :body]
+      pr = create_pull_request title, body
+      Util.logger.info %(Pull request created: #{pr.html_url}.)
     end
 
     def require_params(params, required)
-
       required_errors = required.map do |o|
         validate_param params, o
       end.compact
 
-      raise required_errors.join "\n" unless required_errors.size == 0
+      raise required_errors.join "\n" unless required_errors.empty?
+    end
 
+    def extract_params(params, keys)
+      keys.map do |key|
+        case key
+          when :title
+            params[:title] || last_commit_message
+          else
+            params[key]
+        end
+      end
+    end
+
+    def last_commit_message
+      GitCommands::Log.new('-1 --pretty=%B').run.split("\n").first
     end
 
     # @return String error message if there is an error, else nil
@@ -56,32 +85,21 @@ module Feature
       case param_spec.class
       when Symbol
         "#{param_spec} is not provided." unless params[param_spec]
-      else
-        nil
       end
     end
 
     def pull_request_exists?
-      pulls = Github.pull_requests
-      pulls.any? do |p|
-        p.head.ref == current_feature &&
-            p.head.user.login == Github.github_login &&
-            p.base.ref == 'master'
+      if Github.pull_request_for_feature(feature_name)
+        true
+      else
+        false
       end
     end
 
     def create_pull_request(title, body)
-      Github.create_pull_request current_feature,
+      Github.create_pull_request feature_name,
                                  title,
                                  body
-    end
-
-    def changes_committed?
-      cmd = Command.new 'git'
-      cmd.arg 'status'
-
-      out = cmd.run
-      out =~ /nothing to commit/
     end
   end
 end

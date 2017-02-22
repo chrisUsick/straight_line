@@ -1,3 +1,6 @@
+require 'open3'
+require 'common/shell_error'
+# Basic class for wrapping shell execution
 class Command
   attr_accessor :working_dir
   def initialize(command, args = [])
@@ -13,21 +16,34 @@ class Command
     self
   end
 
-  def run
+  def run(return_stderr = false)
     Dir.chdir working_dir do
       command_with_params = "#{@command} #{@args.join ' '}"
 
-      res = %x[#{command_with_params}]
+      if return_stderr
+        res, status = Open3.capture2e command_with_params
+      else
+        res, stderr, status = Open3.capture3(command_with_params)
+      end
+      unless status.exitstatus == 0
+        output = return_stderr ? res : "#{res}\n#{stderr}"
+        raise ShellError, %(Command `#{command_with_params}` exited with
+          status code: #{status.exitstatus}. Command outputted:\n #{output})
+      end
+
       sub_res = ''
-      sub_res = @sub_commands.map {|c| c.run }.join("\n") unless @sub_commands.empty?
+      sub_res = @sub_commands.map do |sub_command|
+        sub_command.run return_stderr
+      end.join("\n") unless @sub_commands.empty?
 
       res + "\n" + sub_res
     end
   end
 
   def sub_command(command)
-    raise ArgumentError.new 'command must be of type common/command' unless command.kind_of? Command
+    unless command.is_a? Command
+      raise ArgumentError, 'command must be of type common/command'
+    end
     @sub_commands << command
-
   end
 end

@@ -3,6 +3,7 @@ require 'octokit'
 require 'common/user_error'
 require 'common/git_commands/config'
 
+# Github API wrapper
 class Github
   include Singleton
 
@@ -15,17 +16,15 @@ class Github
       self
     end.instance_eval do
       define_method name do |*args|
-        self.instance.send name, *args
+        instance.send name, *args
       end
     end
-
   end
 
-  def login
-  end
+  def login; end
 
   def list_repos
-    @client.repositories query: {type: 'private'}
+    @client.repositories query: { type: 'private' }
   end
 
   def user
@@ -33,28 +32,26 @@ class Github
   end
 
   def ensure_logged_in
-    raise UserError.new 'Must be logged in first' unless @client
-
+    raise UserError, 'Must be logged in first' unless @client
   end
 
   def client
     return @client if @client
 
     @client = Octokit::Client.new netrc: true, auto_paginate: true
-
   end
 
   def create_pull_request(branch, title, body)
     repo = repo_name
     client.create_pull_request repo,
-        'master', "#{github_login}:#{branch}", title, body
+                               'master', "#{github_login}:#{branch}", title, body
   end
   make_class :create_pull_request
 
   def repo_name
     cmd = GitCommands::Config.new('remote.origin.url')
     remote = cmd.run
-    remote.match(/(git@github.com:)(.*\/.*)/)[2]
+    remote.match(%r{(git@github.com:)(.*/.*)})[2]
   end
 
   def github_login
@@ -67,4 +64,13 @@ class Github
   end
   make_class :pull_requests
 
+  def pull_request_for_feature(feature)
+    prs = pull_requests
+    prs.find do |p|
+      p.head.ref == feature &&
+          p.head.user.login == Github.github_login &&
+          p.base.ref == 'master'
+    end
+  end
+  make_class :pull_request_for_feature
 end
