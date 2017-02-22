@@ -39,7 +39,13 @@ module Feature
     def diff_pull_request_exists(params)
       GitCommands::Merge.new(feature_name, 'master').run
       title, body = extract_params params, [:title, :body]
-      GitCommands::Commit.new(title, body).run
+      begin
+        GitCommands::Commit.new(title, body).run
+      rescue StandardError => e
+        unless e.message.match %r[nothing to commit]
+          raise e
+        end
+      end
       GitCommands::Push.new(feature_name).run
     end
 
@@ -47,7 +53,8 @@ module Feature
       GitCommands::Rebase.new('master', feature_name).run
       GitCommands::Push.new(feature_name, false).run
       title, body = extract_params params, [:title, :body]
-      create_pull_request title, body
+      pr = create_pull_request title, body
+      Util.logger.info %(Pull request created: #{pr.html_url}.)
     end
 
     def require_params(params, required)
@@ -82,7 +89,7 @@ module Feature
     end
 
     def pull_request_exists?
-      if Github.pull_request_for_feature(current_feature)
+      if Github.pull_request_for_feature(feature_name)
         true
       else
         false
@@ -90,7 +97,7 @@ module Feature
     end
 
     def create_pull_request(title, body)
-      Github.create_pull_request current_feature,
+      Github.create_pull_request feature_name,
                                  title,
                                  body
     end

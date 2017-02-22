@@ -29,11 +29,10 @@ module Feature
       begin
         GitCommands::Commit.new("Merge master into #{feature_name}", '').run
       rescue StandardError => e
-        unless e.message.match %r[Your branch is up-to-date with 'origin/#{feature_name}]
+        unless e.message.match %r[nothing to commit]
           raise e
         end
       end
-
       GitCommands::Push.new(feature_name).run
       if pull_request_closed?(feature_name)
         Util.logger.info %{#{feature_name} was merged in github.
@@ -44,6 +43,7 @@ module Feature
       end
       GitCommands::Push.new(feature_name, delete: true).run
       Command.new('git checkout master').run
+      Util.logger.info 'Changes landed to master, on master branch now.'
     end
 
     def pull_request_closed?(feature_name)
