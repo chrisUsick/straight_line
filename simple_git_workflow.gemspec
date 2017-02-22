@@ -4,10 +4,10 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'common/command'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'simple_git_workflow'
+  spec.name          = 'straight_line'
   spec.version       = File.read('VERSION').strip
   spec.authors       = ['Chris Usick']
-  spec.email         = ['chris.usick@nfl.com']
+  spec.email         = ['christopher.usick@gmail.com']
 
   spec.summary       = 'Rake commands to perform simple git workflow'
   spec.description   = %(

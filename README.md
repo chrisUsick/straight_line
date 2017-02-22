@@ -9,7 +9,7 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'simple_git_workflow'
+gem 'straight_line'
 ```
 
 And then execute:

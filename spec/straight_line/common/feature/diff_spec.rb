@@ -3,7 +3,8 @@ require 'common/feature/diff'
 
 describe Feature::Diff do
   before do
-    allow_any_instance_of(Kernel).to receive(:system)
+    allow(Open3).to receive(:capture3).and_return(['', '',double('ExitStatus', exitstatus: 0)])
+    allow(Open3).to receive(:capture2e).and_return(['', '',double('ExitStatus', exitstatus: 0)])
   end
 
   context 'pull request does not exist' do
@@ -13,7 +14,7 @@ describe Feature::Diff do
       allow_any_instance_of(Feature::Diff).to receive(:changes_committed?).and_return true
       allow_any_instance_of(Feature::Diff).to receive(:current_feature).and_return 'foo'
       allow_any_instance_of(Feature::Diff).to receive(:pull_request_exists?).and_return false
-      allow_any_instance_of(Feature::Diff).to receive(:create_pull_request)
+      allow_any_instance_of(Feature::Diff).to receive(:create_pull_request).and_return(double('PullRequest', html_url: 'foo.com/1'))
       allow(GitCommands::Pull).to receive(:new).with('master').and_return pull_master
       allow(GitCommands::Rebase).to receive(:new).with('master', 'foo').and_return rebase_cmd
       diff = Feature::Diff.new
@@ -47,12 +48,6 @@ describe Feature::Diff do
       expect(commit_cmd).to have_received(:run)
     end
   end
-
-  it 'pushes committed changes to existing PR' do
-
-  end
-
-  it 'merges changes from master into PR branch'
 
 
 end

@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require 'simple_git_workflow'
+require 'straight_line'
 require 'rake'
 require 'vcr'
 
