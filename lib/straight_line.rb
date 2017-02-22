@@ -1,5 +1,5 @@
 
 # Base module definition
-module SimpleGitWorkflow
+module StraightLine
   # Your code goes here...
 end
