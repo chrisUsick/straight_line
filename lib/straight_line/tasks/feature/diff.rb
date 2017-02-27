@@ -1,6 +1,6 @@
 require 'rake'
-require 'common/command'
-require 'common/feature/diff'
+require 'straight_line/common/command'
+require 'straight_line/common/feature/diff'
 
 namespace 'feature' do
   desc 'Manages a pull request for the current feature branch'

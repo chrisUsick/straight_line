@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'common/github'
+require 'straight_line/common/github'
 
 describe Github do
   it 'lists repos' do
@@ -26,6 +26,14 @@ describe Github do
   describe '::make_class' do
     it 'makes a method class level' do
       expect(Github.respond_to? :create_pull_request).to be_truthy
+    end
+  end
+
+  describe '#repo_name' do
+    it 'gets the name from the remote' do
+      allow(GitCommands::Config).to receive(:new).and_return(double('GitCommands::Config', run: 'git@github.com:chrisUsick/straight_line.git'))
+      actual = Github.instance.repo_name
+      expect(actual).to eq('straight_line')
     end
   end
 end

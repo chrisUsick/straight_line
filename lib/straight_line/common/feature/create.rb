@@ -1,5 +1,5 @@
-require 'common/user_error'
-require 'common/command'
+require 'straight_line/common/user_error'
+require 'straight_line/common/command'
 
 module Feature
   # Creates a new branch for the feature

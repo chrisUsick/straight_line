@@ -1,4 +1,4 @@
-require 'common/command'
+require 'straight_line/common/command'
 
 module GitCommands
   # pull a branch from remote

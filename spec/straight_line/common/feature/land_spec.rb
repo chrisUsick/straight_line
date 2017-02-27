@@ -1,8 +1,8 @@
 require 'spec_helper'
-require 'common/feature/land'
-require 'common/user_error'
-require 'common/command'
-require 'common/github'
+require 'straight_line/common/feature/land'
+require 'straight_line/common/user_error'
+require 'straight_line/common/command'
+require 'straight_line/common/github'
 
 describe Feature::Land do
   it 'does not land if uncommitted files exist' do

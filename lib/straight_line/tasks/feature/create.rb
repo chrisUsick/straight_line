@@ -1,6 +1,6 @@
 require 'rake'
-require 'common/command'
-require 'common/feature/create'
+require 'straight_line/common/command'
+require 'straight_line/common/feature/create'
 
 namespace 'feature' do
   desc 'Creates a feature branch'

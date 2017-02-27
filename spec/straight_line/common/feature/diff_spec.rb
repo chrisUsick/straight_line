@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'common/feature/diff'
+require 'straight_line/common/feature/diff'
 
 describe Feature::Diff do
   before do

@@ -1,5 +1,5 @@
 require 'open3'
-require 'common/shell_error'
+require 'straight_line/common/shell_error'
 # Basic class for wrapping shell execution
 class Command
   attr_accessor :working_dir
@@ -42,7 +42,7 @@ class Command
 
   def sub_command(command)
     unless command.is_a? Command
-      raise ArgumentError, 'command must be of type common/command'
+      raise ArgumentError, 'command must be of type straight_line/common/command'
     end
     @sub_commands << command
   end

@@ -1,4 +1,4 @@
-require 'common/command'
+require 'straight_line/common/command'
 # Base module for all features
 module Feature
   def current_feature
