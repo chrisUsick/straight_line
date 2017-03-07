@@ -1,10 +1,10 @@
-require 'common/feature'
-require 'common/git_commands/merge'
-require 'common/git_commands/commit'
-require 'common/git_commands/pull'
-require 'common/git_commands/push'
-require 'common/util'
-require 'common/github'
+require 'straight_line/common/feature'
+require 'straight_line/common/git_commands/merge'
+require 'straight_line/common/git_commands/commit'
+require 'straight_line/common/git_commands/pull'
+require 'straight_line/common/git_commands/push'
+require 'straight_line/common/util'
+require 'straight_line/common/github'
 
 module Feature
   # Merges the feature to master and pushes it

@@ -1,6 +1,6 @@
 require 'rake'
-require 'common/command'
-require 'common/feature/land'
+require 'straight_line/common/command'
+require 'straight_line/common/feature/land'
 
 namespace 'feature' do
   desc 'Merges master into the feature branch then merges

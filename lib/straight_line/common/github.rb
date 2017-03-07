@@ -1,7 +1,7 @@
 require 'singleton'
 require 'octokit'
-require 'common/user_error'
-require 'common/git_commands/config'
+require 'straight_line/common/user_error'
+require 'straight_line/common/git_commands/config'
 
 # Github API wrapper
 class Github
@@ -51,7 +51,7 @@ class Github
   def repo_name
     cmd = GitCommands::Config.new('remote.origin.url')
     remote = cmd.run
-    remote.match(%r{(git@github.com:)(.*/.*)})[2]
+    remote.match(%r{(git@github.com:)(.*/.*)\.git})[2]
   end
 
   def github_login

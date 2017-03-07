@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'common/git_commands/config'
+require 'straight_line/common/git_commands/config'
 
 describe GitCommands::Config do
   let(:setting) {'remote.origin.url'}

@@ -1,4 +1,4 @@
-require 'common/command'
+require 'straight_line/common/command'
 
 module GitCommands
   # Push a branch to remote

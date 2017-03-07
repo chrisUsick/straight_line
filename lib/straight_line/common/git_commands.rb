@@ -1,4 +1,4 @@
-require 'common/util'
+require 'straight_line/common/util'
 module GitCommands
   def handle_merge_conflict(e)
     if e.message.match %r[Merge conflict in]

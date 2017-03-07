@@ -1,6 +1,6 @@
-require 'common/command'
-require 'common/shell_error'
-require 'common/git_commands'
+require 'straight_line/common/command'
+require 'straight_line/common/shell_error'
+require 'straight_line/common/git_commands'
 
 module GitCommands
   # Rebase a branch to a base

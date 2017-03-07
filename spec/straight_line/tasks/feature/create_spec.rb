@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'tasks/feature/create'
+require 'straight_line/tasks/feature/create'
 describe 'feature:create' do
   let :run_rake_task do
     Rake::Task['feature:create'].reenable

@@ -1,5 +1,5 @@
-require 'common/command'
-require 'common/git_commands'
+require 'straight_line/common/command'
+require 'straight_line/common/git_commands'
 
 module GitCommands
   # Merge a branch into base
