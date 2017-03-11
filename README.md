@@ -42,7 +42,7 @@ The basic workflow of StraightLine is:
 There are 3 rake commands that help with this workflow.
 Note: the quotation marks are important!
 
- 1. `rake "feature:create[<feature-name>]`
+ 1. `rake "feature:create[<feature-name>]"`
     - creates a branch named `feature-name`
  2. `rake "feature:diff[<title>, <body>]"`
     - Creates a pull request
