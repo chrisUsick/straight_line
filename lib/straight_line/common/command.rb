@@ -16,6 +16,10 @@ class Command
     self
   end
 
+  def self.from_file(file_name)
+
+  end
+
   def run(return_stderr = false)
     Dir.chdir working_dir do
       command_with_params = "#{@command} #{@args.join ' '}"

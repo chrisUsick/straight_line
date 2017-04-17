@@ -31,6 +31,13 @@ machine api.github.com
 	login <Your Github username>
 	password <Github API token>
 ```
+
+Note `~/.netrc` needs to have `600` permissions. Do this with the following command:
+
+```bash
+chmod 600 ~/.netrc
+```
+
 ## Usage
 
 The basic workflow of StraightLine is: 

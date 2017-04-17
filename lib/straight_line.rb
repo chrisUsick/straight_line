@@ -1,8 +1,8 @@
+require 'straight_line/common/configure'
 
 # Base module definition
 module StraightLine
-  # Your code goes here...
-  def self.foo
-    puts 'la'
+  def self.configure
+    yield Configure.new
   end
 end
