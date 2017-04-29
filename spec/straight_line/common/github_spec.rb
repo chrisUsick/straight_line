@@ -33,7 +33,7 @@ describe Github do
     it 'gets the name from the remote' do
       allow(GitCommands::Config).to receive(:new).and_return(double('GitCommands::Config', run: 'git@github.com:chrisUsick/straight_line.git'))
       actual = Github.instance.repo_name
-      expect(actual).to eq('straight_line')
+      expect(actual).to eq('chrisUsick/straight_line')
     end
   end
 end
