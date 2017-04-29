@@ -16,9 +16,7 @@ class Command
     self
   end
 
-  def self.from_file(file_name)
-
-  end
+  def self.from_file(_file_name); end
 
   def run(return_stderr = false)
     Dir.chdir working_dir do
@@ -29,19 +27,26 @@ class Command
       else
         res, stderr, status = Open3.capture3(command_with_params)
       end
-      unless status.exitstatus == 0
+      unless status.exitstatus.zero?
         output = return_stderr ? res : "#{res}\n#{stderr}"
         raise ShellError, %(Command `#{command_with_params}` exited with
           status code: #{status.exitstatus}. Command outputted:\n #{output})
       end
 
-      sub_res = ''
-      sub_res = @sub_commands.map do |sub_command|
-        sub_command.run return_stderr
-      end.join("\n") unless @sub_commands.empty?
+      sub_res = run_sub_commands return_stderr
 
       res + "\n" + sub_res
     end
+  end
+
+  def run_sub_commands(return_stderr)
+    sub_res = ''
+    unless @sub_commands.empty?
+      sub_res = @sub_commands.map do |sub_command|
+        sub_command.run return_stderr
+      end.join("\n")
+    end
+    sub_res
   end
 
   def sub_command(command)

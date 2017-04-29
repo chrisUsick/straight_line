@@ -1,6 +1,7 @@
 require 'rake'
 require 'straight_line/common/command'
 
+# Configuration class to add tasks to the straightline rake config
 class Configure
   def add(name, type, command, opts = {})
     Rake.application.in_namespace StraightLine::TASK_NAMESPACE do
@@ -11,13 +12,18 @@ class Configure
         elsif !name.nil?
           Rake::Task[command].invoke
         end
-        after = opts[:after]
-        unless after.nil?
-          after.each do |task|
-            Rake::Task[task].invoke
-          end
-        end
+        run_after_commands(opts)
       end
+    end
+  end
+
+  private
+
+  def run_after_commands(opts)
+    after = opts[:after]
+    return if after.nil?
+    after.each do |task|
+      Rake::Task[task].invoke
     end
   end
 end

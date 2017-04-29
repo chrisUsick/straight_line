@@ -21,9 +21,9 @@ module GitCommands
 
       if opts[:delete]
         push_command
-            .arg('origin')
-            .arg('--delete')
-            .arg(branch)
+          .arg('origin')
+          .arg('--delete')
+          .arg(branch)
       elsif !remote_exists
         push_command
           .arg('--set-upstream')

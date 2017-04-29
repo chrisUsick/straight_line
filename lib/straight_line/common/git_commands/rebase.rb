@@ -13,7 +13,7 @@ module GitCommands
       arg branch
     end
 
-    def run(*args)
+    def run(*_args)
       super true
     rescue ShellError => e
       handle_merge_conflict(e)

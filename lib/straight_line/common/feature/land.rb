@@ -22,28 +22,33 @@ module Feature
 
     def land(_args = {})
       feature_name = current_feature
-      pull_cmd = GitCommands::Pull.new('master')
-      pull_cmd.run
+      merge_master_to_feature(feature_name)
+      GitCommands::Push.new(feature_name).run
+      merge_feature_to_master(feature_name)
+      GitCommands::Push.new(feature_name, delete: true).run
+      Command.new('git checkout master').run
+      Util.logger.info 'Changes landed to master, on master branch now.'
+    end
+
+    def merge_feature_to_master(feature_name)
+      if pull_request_closed?(feature_name)
+        Util.logger.info %(#{feature_name} was merged in github.
+          You're repo is up-to-date with remote)
+      else
+        GitCommands::Merge.new('master', feature_name).run
+        GitCommands::Push.new('master').run
+      end
+    end
+
+    def merge_master_to_feature(feature_name)
+      GitCommands::Pull.new('master').run
       GitCommands::Merge.new(feature_name, 'master').run
 
       begin
         GitCommands::Commit.new("Merge master into #{feature_name}", '').run
       rescue StandardError => e
-        unless e.message.match %r[nothing to commit]
-          raise e
-        end
+        raise e unless e.message =~ /nothing to commit/
       end
-      GitCommands::Push.new(feature_name).run
-      if pull_request_closed?(feature_name)
-        Util.logger.info %{#{feature_name} was merged in github.
-          You're repo is up-to-date with remote}
-      else
-        GitCommands::Merge.new('master', feature_name).run
-        GitCommands::Push.new('master').run
-      end
-      GitCommands::Push.new(feature_name, delete: true).run
-      Command.new('git checkout master').run
-      Util.logger.info 'Changes landed to master, on master branch now.'
     end
 
     def pull_request_closed?(feature_name)

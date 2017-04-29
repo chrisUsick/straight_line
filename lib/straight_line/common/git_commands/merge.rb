@@ -16,7 +16,7 @@ module GitCommands
       sub_command merge_command
     end
 
-    def run(*args)
+    def run(*_args)
       super true
 
     rescue ShellError => e
