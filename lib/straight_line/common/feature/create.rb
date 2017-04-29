@@ -6,7 +6,7 @@ module Feature
   class Create
     def initialize(feature_name)
       raise UserError, 'Feature name required' unless feature_name
-      raise UserError, "Feature name can't have spaces" if feature_name.match %r[\s]
+      raise UserError, "Feature name can't have spaces" if feature_name =~ /\s/
       @feature_name = feature_name
     end
 

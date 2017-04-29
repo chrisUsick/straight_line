@@ -68,8 +68,8 @@ class Github
     prs = pull_requests
     prs.find do |p|
       p.head.ref == feature &&
-          p.head.user.login == Github.github_login &&
-          p.base.ref == 'master'
+        p.head.user.login == Github.github_login &&
+        p.base.ref == 'master'
     end
   end
   make_class :pull_request_for_feature

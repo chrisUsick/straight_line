@@ -1,8 +1,14 @@
+require 'straight_line/common/configure'
+require 'rake'
 
 # Base module definition
 module StraightLine
-  # Your code goes here...
-  def self.foo
-    puts 'la'
+  TASK_NAMESPACE = 'sl'.freeze
+  def self.configure
+    yield Configure.new
+  end
+
+  def self.task_namespace
+    Rake::DSL
   end
 end

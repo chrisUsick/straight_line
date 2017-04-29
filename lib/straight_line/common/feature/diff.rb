@@ -42,9 +42,7 @@ module Feature
       begin
         GitCommands::Commit.new(title, body).run
       rescue StandardError => e
-        unless e.message.match %r[nothing to commit]
-          raise e
-        end
+        raise e unless e.message =~ /nothing to commit/
       end
       GitCommands::Push.new(feature_name).run
     end
@@ -68,10 +66,10 @@ module Feature
     def extract_params(params, keys)
       keys.map do |key|
         case key
-          when :title
-            params[:title] || last_commit_message
-          else
-            params[key]
+        when :title
+          params[:title] || last_commit_message
+        else
+          params[key]
         end
       end
     end

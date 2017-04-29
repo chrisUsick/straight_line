@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rubocop', require: false
+gem 'simplecov'
 gem 'vcr'
 gem 'version_bumper'
 gem 'webmock'
-gem 'simplecov'
