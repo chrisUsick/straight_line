@@ -1,5 +1,6 @@
 require 'rake'
 require 'straight_line/common/command'
+require 'straight_line/common/util'
 
 # Configuration class to add tasks to the straightline rake config
 class Configure
@@ -8,8 +9,12 @@ class Configure
       Rake::Task.define_task name => opts[:before] do
         if type == :shell
           cmd = Command.new command
+          Util.logger.puts "executing command #{command}. Error results will be
+            displayed if any ocur"
           cmd.run
         elsif !name.nil?
+          Util.logger.puts "executing task #{command}. Error results will be
+          displayed if any ocur"
           Rake::Task[command].invoke
         end
         run_after_commands(opts)

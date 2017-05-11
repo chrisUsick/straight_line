@@ -1,4 +1,5 @@
 require 'straight_line/common/configure'
+require 'straight_line/tasks'
 require 'rake'
 
 # Base module definition
