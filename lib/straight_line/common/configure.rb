@@ -9,11 +9,11 @@ class Configure
       Rake::Task.define_task name => opts[:before] do
         if type == :shell
           cmd = Command.new command
-          Util.logger.puts "executing command #{command}. Error results will be
+          Util.logger.info "executing command #{command}. Error results will be
             displayed if any ocur"
           cmd.run
         elsif !name.nil?
-          Util.logger.puts "executing task #{command}. Error results will be
+          Util.logger.info "executing task #{command}. Error results will be
           displayed if any ocur"
           Rake::Task[command].invoke
         end
